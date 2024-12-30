@@ -1,9 +1,9 @@
-<fieldset sytle="width:50%;margin:auto;">
+<fieldset style="width:50%;margin:auto;">
     <legend>會員登入</legend>
     <!-- table>tr*3>td*2 -->
     <table>
         <tr>
-            <td>帳號管理</td>
+            <td>帳號</td>
             <td><input type="text" name="acc" id="acc"></td>
         </tr>
         <tr>
@@ -12,7 +12,7 @@
         </tr>
         <tr>
             <td>
-                <input type="submit" valve="登入"><input type="reset" value="清除">
+                <input type="submit" value="登入"><input type="reset" value="清除">
             </td>
             <td>
                 <a href="?do=forgot">忘記密碼</a>
