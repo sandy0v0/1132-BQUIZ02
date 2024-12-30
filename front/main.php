@@ -5,7 +5,7 @@
     margin-left: -1px;
     margin-bottom:-1px;
     cursor:pointer;
-    background:#eee;
+    background-color:#eee;
     /* margin: 0 1px; */
 }
 
