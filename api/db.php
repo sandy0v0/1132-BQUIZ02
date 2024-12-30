@@ -173,22 +173,18 @@ function to($url){
 }
 
 
-$Title=new DB('titles');
-$Ad=new DB('ads');
-$Image=new DB('images');
-$Mvim=new DB('mvims');
-$News=new DB('news');
-$Admin=new DB('admins');
-$Menu=new DB('menus');
 $Total=new DB('total');
-$Bottom=new DB('bottom');
 
 
 if(!isset($_SESSION['view'])){
+    if($Total->count(['date'=>date("Y-m-d")])>0){
+        $total=$Total->find(['date'=>date("Y-m-d")]);
+        $total['total']++;
+        $Total->save($total);
+    }else{
+        $Total->save(['date'=>date("Y-m-d"),'total'=>1]);
+    }
     $_SESSION['view']=1;
-    $total=$Total->find(1);
-    $total['total']++;
-    $Total->save($total);
 }
 
 
