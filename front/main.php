@@ -21,10 +21,6 @@
     margin-left: 1px;
 }
 
-.texts{
-
-}
-
 .text{
     width: 98%;
     min-height:450px;
@@ -36,8 +32,6 @@
 .active{
     display:block;
 }
-
-
 
 </style>
 <div style=width:96%;margin:auto;>
