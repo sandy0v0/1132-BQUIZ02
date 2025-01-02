@@ -15,5 +15,7 @@
         <td></td>
     </tr>
     </table>
-<div class="ct"><button onclick="edit()">確定修改</button></div>
+    <div class="ct">
+        <button onclick="edit()">確定修改</button>
+    </div>
 </fieldset>
