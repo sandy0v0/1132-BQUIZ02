@@ -175,6 +175,7 @@ function to($url){
 
 $Total=new DB('total');
 $User=new DB('users');
+$News=new DB('news');
 
 
 

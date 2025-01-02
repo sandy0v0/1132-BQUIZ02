@@ -18,7 +18,10 @@
         </tr>
         <?php endforeach;?>
     </table>
-    <div class="ct"><button onclick='del()'>確定刪除</button><button onclick='resetChk()'>清空選取</button></div>
+    <div class="ct">
+        <button onclick='del()'>確定刪除</button>
+        <button onclick='resetChk()'>清空選取</button>
+    </div>
 <h2>新增會員</h2>    
     <div style="color:red">
         *請設定您要註冊的帳號及密碼(最長12個字元)
@@ -42,7 +45,7 @@
         </tr>
         <tr>
             <td>
-                <input type="button" value="註冊" onclick='reg()'>
+                <input type="button" value="新增" onclick='reg()'>
                 <input type="button" value="清除" onclick='resetForm()'>
             </td>
             <td></td>
