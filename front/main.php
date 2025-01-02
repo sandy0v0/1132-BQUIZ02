@@ -7,6 +7,7 @@
     cursor:pointer;
     background-color:#eee;
     /* margin: 0 1px; */
+    border-radius: 10px 10px 0px 0px;
 }
 
 /* 當兩個在一起的時候，中間有空格active是type的子元素[.type .active] */

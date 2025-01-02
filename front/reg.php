@@ -48,12 +48,12 @@ function reg(){
         // 我把帳號給你,幫我確認帳號是否存在=資料的取得
         // 我把res的程式放到chk_acc去檢查，如果帳號不是1,就需要做註冊
         $.get("./api/chk_acc.php",{acc:user.acc},(res)=>{
-            console.log("chk acc => ",res)
+            // console.log("chk acc => ",res)
             if(parseInt(res)>0){
                 alert("帳號重複")
             }else{
                 $.post("./api/reg.php",user,(res)=>{
-                    console.log("reg => ",res)
+                    // console.log("reg => ",res)
                     if(parseInt(res)==1){
                         alert("註冊完成，歡迎加入")
                     }

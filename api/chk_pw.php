@@ -4,8 +4,15 @@
 
 // echo $res=$User->count(['acc'=>$acc]);
 
-echo $User->count($_GET);
+// echo $User->count($_POST);
 
+$chk=$User->count($_POST);
+if($chk){
+    echo $chk;
+    $_SESSION['user']=$_POST['acc'];
+}else{
+    echo 0;
+}
 /*
 會員登入: ajax資料傳入後台判斷
 (O)如果有資料的話返回1,並導到首頁(主題內容頁面);
