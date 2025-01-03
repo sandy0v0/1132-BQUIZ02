@@ -177,6 +177,7 @@ $Total=new DB('total');
 $User=new DB('users');
 $News=new DB('news');
 $Que=new DB('que');
+$Log=new DB('log');
 
 
 
