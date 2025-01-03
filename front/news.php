@@ -19,9 +19,9 @@
     foreach($rows as $row):
     ?>
     <tr>
-        <th><?=$row['title'];?></th>
-        <th><?=mb_substr($row['news'],0,25);?>...</th>
-        <th></th>
+        <td><?=$row['title'];?></td>
+        <td><?=mb_substr($row['news'],0,25);?>...</td>
+        <td></td>
     </tr>
     <?php endforeach; ?>
 </table>
