@@ -47,7 +47,7 @@
         $("#type").text($(this).text())
 
         let type=$(this).data('type')
-        grtList(type)
+        getList(type)
 
 })
 
@@ -64,7 +64,10 @@ function getList(type){
         $("#postList").html(list)
     }) 
     */
+}
 
+function getPost(id){
+    $("#postList").load("./api/get_post.php",{id})
 }
 
 </script>
