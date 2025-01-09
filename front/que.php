@@ -22,7 +22,7 @@
         <td class='ct'><a href='?do=result&id=<?=$row['id'];?>'>結果</a></td>
         <td class='ct'>
             <?php
-            if(isset($_SESSION['user'])){
+            if(!isset($_SESSION['user'])){
                 echo "請先登入";
             }else{
                 echo "<a href='?do=vote&id={$row['id']}'>我要投票</a>";

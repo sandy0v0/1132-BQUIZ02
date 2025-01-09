@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>財經股票網站</title>
+    <!-- 引入 Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 可選：引入自訂 CSS -->
+    <style>
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: rgba(0, 0, 0, 0.5);
+            /* 半透明黑色背景 */
+            border-radius: 50%;
+            /* 圓形 */
+        }
+
+        .carousel-control-prev-icon {
+            border-left: 2px solid white;
+            /* 左箭頭加上白色邊框 */
+        }
+
+        .carousel-control-next-icon {
+            border-right: 2px solid white;
+            /* 右箭頭加上白色邊框 */
+        }
+
+
+
+        .bg-light-gray {
+            background-color: #f8f9fa;
+        }
+
+        body {
+            padding-top: 50px;
+        }
+
+        .stock-card {
+            margin-bottom: 20px;
+        }
+
+
+        .change-yellow {
+            background-color: yellow;
+            color: black;
+        }
+
+        .change-red {
+            background-color: red;
+            color: black;
+
+        }
+
+        .change-green {
+            background-color: green;
+            color: black;
+        }
+
+        #myChart {
+            width: 1200px;
+            /* 設定顯示寬度 */
+            height: 600px;
+            /* 設定顯示高度 */
+        }
+
+        .carousel-item img {
+            max-height: 700px;
+            /* 限制圖片最大高度 */
+            width: auto;
+            /* 圖片寬度設為容器的 100% */
+            object-fit: contain;
+            /* 保持圖片比例，並填滿容器 */
+        }
+
+        /* Google 地圖容器居中 */
+        .map-container {
+            display: flex;
+            justify-content: center;
+            /* 水平居中 */
+            align-items: center;
+            /* 垂直居中 */
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .music-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .audio-control {
+            margin-left: 10px;
+        }
+
+        #playButton {
+            cursor: pointer;
+        }
+
+        .countdown-timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff5733;
+            padding: 10px;
+        }
+
+        .mar {
+            margin-top: 3px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">財經股票網站</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <div class="ms-auto countdown-timer">
+                            限時優惠:
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="ml-auto countdown-timer" id="countdown">
+                        </div>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link active fs-5 mar" aria-current="page" href="#home">首頁</a>
+                    </li>
+                    <li class="nav-item">
+
+                        <a class="nav-link fs-5 mar" href="#stock_chanel">24小時財經台</a>
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a class="nav-link fs-5 mar" href="#stock_chart">大盤指數</a>
+                    </li>
+                    <li class="nav-item">
+
+                        <a class="nav-link fs-5 mar" href="#stock">股票資訊</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5 mar" href="#about">關於我們</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5 mar" href="#contact">聯絡我們</a>
+                    </li>
+                    <li class="nav-item">
+
+                        <div class="music-controls nav-link">
+                            <!-- 播放音樂的按鈕 -->
+
+                            <img id="playButton" src="32play.png" alt="播放音樂" class="audio-control fs-5 mar">00940 之歌
+                            <!-- 音樂檔案，修改 src 屬性為 00940.m4a -->
+                            <audio id="music" src="00940.mp3" preload="auto"></audio>
+                            <!-- 音量控制 -->
+                            <input type="range" id="volumeControl" class="audio-control" min="0" max="1" step="0.1"
+                                value="1">
+                        </div>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // 設定倒數結束的目標時間，這裡設定為 2024年12月31日 23:59:59
+        const today = new Date();
+
+        today.setDate(today.getDate() + 3);
+        const targetDate = today.getTime();
+        // 取得倒數計時器顯示的元素
+        const countdownElement = document.getElementById("countdown");
+
+        // 每秒更新一次倒數
+        const interval = setInterval(function () {
+            const now = new Date().getTime(); // 當前時間
+            const distance = targetDate - now; // 計算剩餘時間
+
+            // 計算剩餘的天數、時、分、秒
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // 顯示倒數時間
+            countdownElement.innerHTML = `${days}天 ${hours}小時 ${minutes}分鐘 ${seconds}秒`;
+
+            // 如果倒數結束，顯示結束訊息
+            if (distance < 0) {
+                clearInterval(interval); // 停止更新
+                countdownElement.innerHTML = "倒數結束！";
+            }
+        }, 1000); // 每秒更新一次
+    </script>
+
+    <script>
+        // 取得音樂元素和播放按鈕
+        const audio = document.getElementById('music');
+        const playButton = document.getElementById('playButton');
+        const volumeControl = document.getElementById('volumeControl');
+
+        // 音樂播放器按鈕的點擊事件
+        playButton.addEventListener('click', function () {
+            if (audio.paused) {
+                audio.play(); // 播放音樂
+                playButton.src = "32pause.png"; // 替換為暫停圖示
+            } else {
+                audio.pause(); // 暫停音樂
+                playButton.src = "32play.png"; // 替換為播放圖示
+            }
+        });
+
+        // 音量控制事件
+        volumeControl.addEventListener('input', function () {
+            audio.volume = volumeControl.value; // 設置音樂音量
+        });
+    </script>
+
+
+    <!-- 首頁 -->
+    <section id="home" class="bg-light py-5">
+        <div class="container text-center">
+            <h1 class="display-4">歡迎來到財經股票網站</h1>
+            <p class="lead">即時更新的股市資訊和專業分析，幫助您做出聰明的投資決策。</p>
+        </div>
+    </section>
+    <!-- Carousel (輪播圖) -->
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="https://i.ontraport.com/190798.4d9ebebde9e3890ead2a9c252dbd013d.JPEG" class="d-block w-100"
+                    alt="股市圖片1">
+                <div class="carousel-caption d-none d-md-block">
+
+
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://i.ontraport.com/190798.3f75c7f1d266a5bf16eb5b6996c28e3b.JPEG?ops=1707"
+                    class="d-block w-100" alt="股市圖片2">
+                <div class="carousel-caption d-none d-md-block">
+
+
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiwarY-Q1BiIkU89-WFtlLApYs6LD8MC45N_QPUHJSZIHs3KaJVCXu_5XsZZl8xTLtBjuBpWJ8xlSmkVxafktNxEHgzjlD8oe_PdYxz3z3Ri_cw1iPYdWLSxNg5ZgfjaP4-db-_lrFt2Y_EUYDB6CKDsLXxrwwFEO_9GT1P3lohOwfc7WvpSNT9tc8g5FAc/s320/%E4%BA%A4%E6%98%93%E7%AD%96%E7%95%A5%EF%BC%9A%E3%80%8C%E6%93%8D%E4%BD%9C%E5%AE%88%E5%89%87%E3%80%8D%E9%87%8D%E9%BB%9E%E6%95%B4%E7%90%86-%E5%AE%88%E5%89%8769.png"
+                    class="d-block w-100" alt="股市圖片3">
+                <div class="carousel-caption d-none d-md-block">
+
+
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://drich01.com/wp-content/uploads/2022/05/%E5%9C%96%E7%89%872.png" class="d-block w-100"
+                    alt="股市圖片4">
+                <div class="carousel-caption d-none d-md-block">
+
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- YouTube 影片嵌入並置中 -->
+
+
+    <h1 class="display-6 text-center"> 財經股市24小時直播</h1>
+
+
+    <section id="stock_chanel" class="bg-light py-5">
+        <div class=" ratio ratio-16x9 col-md-10 d-flex justify-content-center ">
+            <!-- 使用 Bootstrap 的 d-flex 和 justify-content-center 來置中影片 -->
+            <iframe src=" https://www.youtube.com/embed/AEBeWMM1atA" style="width: 95%; height: 95% ;padding-left: 4%"
+                title="YouTube video" allowfullscreen></iframe>
+
+        </div>
+    </section>
+
+
+
+    <section id="stock_chart" class="bg-light py-5">
+        <div class="container mt-6">
+            <h1 class="text-center mb-4">加權指數圖</h1>
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <!-- 設置圖表顯示區 -->
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function fetchStockchart() {
+            let currentDate = new Date();
+            let isoString = currentDate.toISOString();
+            // 使用 fetch 從 PHP 端獲取數據
+            fetch('get_stock_chart.php')  // 假設你的 PHP 檔案名為 chartdata.php
+                .then(response => response.json())  // 解析 JSON
+                .then(data => {
+                    // 把 PHP 傳來的資料處理並轉換為 Chart.js 所需的格式
+
+                    console.log('type of data:', typeof (data));
+                    console.log('data:', data);
+
+
+                    // 把 PHP 傳來的資料處理並轉換為 Chart.js 所需的格式
+                    let labels = [];
+                    let values = [];
+
+                    // 處理資料，將時間戳 (ts) 轉換為日期，價格 (c) 直接放入價格陣列
+                    data.forEach(item => {
+                        let date = new Date(parseInt(item.t));  // 將時間戳轉換為 JavaScript 日期
+                        labels.push(date.toLocaleTimeString());  // 提取小時:分鐘 作為 X 軸標籤
+                        values.push(item.c);  // Y 軸價格
+                    });
+
+                    // 處理資料，將時間戳 (ts) 轉換為日期，價格 (c) 直接放入價格陣列
+                    // const labels = data.map(item => {
+                    //     const date = new Date(parseInt(item.t));  // 轉換時間戳
+                    //     return date.toLocaleTimeString();         // 轉換為當地時間格式
+                    // });
+
+                    // const values = data.map(item => parseFloat(item.c)); // Y 軸數據
+
+                    console.log('labels:', labels);
+                    console.log('values:', values);
+                    // 設置圖表配置
+                    const ctx = document.getElementById('myChart').getContext('2d');
+
+                    const myChart = new Chart(ctx, {
+                        type: 'line',  // 設定圖表類型為線圖
+                        data: {
+                            labels: labels,  // X 軸標籤：時間
+                            datasets: [{
+                                label: '指數 (C)',  // 圖例
+                                data: values,  // Y 軸數據：價格
+                                borderColor: 'rgba(75, 192, 192, 1)',  // 線條顏色
+                                borderWidth: 2,
+                                fill: false,  // 不填充背景
+                                pointRadius: 0,
+                                tension: 0.5  // 曲線彎曲度
+
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: isoString
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: '大盤指數 '
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching chart data:', error));
+
+        }
+    </script>
+    <!-- 股票資訊區 -->
+
+
+
+    <section id="stock" class="py-5 bg-light-gray"></section>
+    <div class="container">
+        <h1 class="text-center mb-4">最新股票資訊</h1>
+
+        <div class="row" id="stock-info-container">
+            <!-- 這裡會顯示股票資訊 -->
+        </div>
+
+    </div>
+
+    <script>
+        // 每5秒更新一次股票資訊
+        function fetchStockData() {
+            fetch('get_stock_dataV3.php')  // PHP後端接口
+                // fetch('get_stock_dataV1.php')  // PHP後端接口
+                .then(response => response.json())
+                .then(data => {
+                    let stockContainer = document.getElementById('stock-info-container');
+                    stockContainer.innerHTML = ''; // 清空原有的資料
+                    console.log('data:', data);
+                    data.forEach(stock => {
+                        // 計算漲跌幅並決定顏色
+                        let changeClass = '';
+                        let changeText = '';
+
+                        // 計算漲跌幅並決定顏色
+                        const change = stock.change; // 漲跌幅
+                        if (change == 0) {
+                            changeClass = 'change-yellow';
+                            changeText = '漲跌幅: 0%';
+                        } else if (change > 0) {
+                            changeClass = 'change-red';
+                            changeText = `漲跌幅: +${(change * 100).toFixed(2)}%`;
+                        } else {
+                            changeClass = 'change-green';
+                            changeText = `漲跌幅: ${((change) * 100).toFixed(2)}%`;
+                        }
+                        let cardHTML = `
+              <div class="col-md-4">
+                <div class="card stock-card">
+                  <div class="card-body">
+                    <h5 class="card-title">${stock.name} (${stock.symbol})</h5>
+                    <p class="card-text">最新價格: NT$ ${stock.price}</p>
+                    <p class="card-text ${changeClass}">${changeText}</p>
+                    <a href="https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=html&date=${stock.date}&stockNo=${stock.symbol}" class="btn btn-primary" target="_blank">查看本月詳細資料</a>
+                  </div>
+                </div>
+              </div>
+            `;
+                        stockContainer.innerHTML += cardHTML;
+                    });
+                })
+                .catch(error => {
+
+                    console.error('Error fetching stock data:', error);
+                });
+        }
+
+        // 頁面載入後立即取得股票資料
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchStockchart();
+            setTimeout(function () {
+                fetchStockData(); // 等待1秒鐘後執行fetchStockData
+            }, 1000); // 1000毫秒 = 1秒鐘
+            setInterval(fetchStockchart, 60000); // 每60秒自動刷新資料
+            setInterval(fetchStockData, 60000); // 每60秒自動刷新資料
+        });
+    </script>
+    </section>
+
+
+
+    <!-- 關於我們區 -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">關於我們</h2>
+            <p class="text-center">我們致力於提供最新和最準確的股市資訊，幫助投資者做出明智的決策。</p>
+            <div class="mt-4">
+                <h4 class="text-center">公司地址：</h4>
+                <p class="text-center">243新北市泰山區貴子里致遠新村55之1號 </p>
+                <div class="map-container">
+                    <!-- Google 地圖嵌入 -->
+                    <iframe src="https://www.google.com/maps?q=25.044416021378822, 121.41944049425813&z=16&output=embed"
+                        frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+                </div>
+            </div>
+
+    </section>
+
+    <!-- 聯絡我們區 -->
+    <section id="contact" class="bg-light py-5">
+        <div class="container text-center">
+            <h2>聯絡我們</h2>
+            <p>若您有任何問題或建議，請隨時與我們聯繫！</p>
+            <a href="mailto:contact@finance.com" class="btn btn-primary">發送電子郵件</a>
+        </div>
+    </section>
+
+    <!-- 引入 Bootstrap 5 JS 和 Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>
